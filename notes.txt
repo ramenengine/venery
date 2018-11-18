@@ -1,0 +1,56 @@
+generic collections
+
+stack
+
+string
+
+nodetree
+    to add memory management, you need to inherit from the node-vtable
+    and extend DELETE
+    
+    
+
+dynamic array
+
+table
+
+
+
+
+
+
+
+
+
+
+
+features
+- same words work on different collections
+- optional bounds checking
+
+
+
+
+word ideas
+
+each
+some
+enough
+map
+length
+indexof
+[]@
+[]!
+[]+!
+join
+slice
+vacate
+pop
+push
+top@
+unshift
+shift
+insert
+union
+diff
+
