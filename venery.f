@@ -181,6 +181,56 @@ collection-vtable-size vtable string-vtable  ( collection 0 )
     r@ set-string
     r> ;
 
+
+( Node tree )
+struct %node
+    %node %collection sembed node.collection
+    %node svar node.parent
+    %node svar node.first
+    %node svar node.last
+    %node svar node.previous
+    %node svar node.next
+
+
+
+collection-vtable-size vtable node-vtable  ( collection 0 )
+    \ vector []  ( index node -- node|0 )
+    :vector
+        dup length 0 = if 2drop 0 exit then 
+        node.first @ swap 0 ?do node.next @ loop ; 
+    \ vector truncate  ( n collection -- )
+    :vector
+        locals| c n |
+        c length n do i c delete loop 
+        n c collection.length dup @ rot min swap ! ;
+    \ vector push  ( item collection -- )
+    :vector  >r  r@ length  r@ [] c!  1 r> collection.length +! ;
+    \ vector pop  ( collection -- item )
+    :vector  >r  r@ length 1 -  r@ [] c@   -1 r> collection.length +! ;
+    \ vector each  ( xt collection -- )  ( adr -- )
+    :vector  xt >r swap to xt dup string.data @ swap length bounds ?do
+        i xt execute 1 bytes +loop r> to xt ; 
+    \ vector delete  ( index count collection -- )
+    :vector  3dup nip length >= if 3drop exit then
+        locals| c n i |
+        i n + c length min i - to n  \ adjust count if needed
+        i bytes c string.data @ +  \ dest
+        dup n bytes +  \ src
+        swap  \ src dest
+        c string.data @ c length bytes + \ end
+        over - ?move
+        n negate c collection.length +! ;
+    \ vector .each  ( collection -- )
+    :vector  dup string.data @ swap length dup . ." : "  type ;
+    \ vector indexof  ( index item collection -- index | -1 )  
+    :vector  locals| c itm |
+        begin  dup c inbounds? while
+            dup c [] c@ itm = ?exit
+            1 +
+        repeat
+        drop -1 ;
+2drop
+
 only forth definitions
 
 \ test
