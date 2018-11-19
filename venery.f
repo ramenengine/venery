@@ -2,6 +2,14 @@
 \ TODO:  
 \ COPY
 \ JOIN
+\ INSERT
+\ SHIFT   ( or maybe PLUCK?  extract any item; could also be a generic )
+\ UNSHIFT  ( or just use INSERT; could also be a generic )
+\ dynamic collection allocation support 
+
+defer new-node   ( -- node )
+defer free-node  ( node -- )
+
 
 vocabulary venery
 : venery-internal  only forth also venery definitions ;
@@ -19,6 +27,7 @@ venery-internal
     : struct  variable ;
     : sembed  @ sfield ;
     : *struct  here swap @ /allot ;
+    : sizeof  @ ;
     [undefined] bytes [if] : bytes ; [then]
 
     struct %collection
@@ -35,18 +44,18 @@ venery-internal
     : :vector  ( collection n - <code> ; collection n+1 )
         2dup :noname -rot cells + ! 1 + ;
 
-
 venery-public
 
 0
 vector []  ( n collection -- adr )
-vector truncate  ( n collection -- )
+vector truncate  ( newlength collection -- )
 vector push  ( item collection -- )
 vector pop  ( collection -- item )
 vector each  ( xt collection -- )  ( adr -- )
-vector delete  ( index count collection -- )
+vector deletes  ( index count collection -- )
 vector .each  ( collection -- )
-vector indexof  ( index item collection -- index )  
+vector indexof  ( index val collection -- index )  
+vector remove   ( val collection -- )  \ remove all instances
 constant collection-vtable-size
 
 : length  ( collection -- n )
@@ -89,14 +98,14 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
     :vector  array.data @ swap cells + ; 
     \ vector truncate  ( n collection -- )
     :vector  collection.length dup @ rot min swap ! ;
-    \ vector push  ( item collection -- )
+    \ vector push  ( val collection -- )
     :vector  >r  r@ length  r@ [] !  1 r> collection.length +! ;
-    \ vector pop  ( collection -- item )
+    \ vector pop  ( collection -- val )
     :vector  >r  r@ length 1 -  r@ [] @   -1 r> collection.length +! ;
     \ vector each  ( xt collection -- )  ( adr -- )
     :vector  xt >r swap to xt dup array.data @ swap length cells bounds ?do
         i xt execute cell +loop r> to xt ; 
-    \ vector delete  ( index count collection -- )
+    \ vector deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
         locals| c n i |
         i n + c length min i - to n  \ adjust count if needed
@@ -108,13 +117,20 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
         n negate c collection.length +! ;
     \ vector .each  ( collection -- )
     :vector  dup length . ." items: " each> ? ;
-    \ vector indexof  ( index item collection -- index | -1 )  
+    \ vector indexof  ( index val collection -- index | -1 )  
     :vector  locals| c itm |
         begin  dup c inbounds? while
             dup c [] @ itm = ?exit
             1 +
         repeat
-        drop -1 ; 
+        drop -1 ;
+    \ vector remove   ( val collection -- )  \ remove all instances
+    :vector  locals| c itm |
+        c length 0 ?do
+            i c length >= if unloop exit then
+            i c [] @ itm = if i 1 c deletes then 
+        loop ;
+    
 2drop
 
 : *array  ( n -- array )  %array *struct >r array-vtable r@ collection.vtable !
@@ -134,14 +150,14 @@ collection-vtable-size vtable string-vtable  ( collection 0 )
     :vector  array.data @ swap bytes + ; 
     \ vector truncate  ( n collection -- )
     :vector  collection.length dup @ rot min swap ! ;
-    \ vector push  ( item collection -- )
+    \ vector push  ( val collection -- )
     :vector  >r  r@ length  r@ [] c!  1 r> collection.length +! ;
-    \ vector pop  ( collection -- item )
+    \ vector pop  ( collection -- val )
     :vector  >r  r@ length 1 -  r@ [] c@   -1 r> collection.length +! ;
     \ vector each  ( xt collection -- )  ( adr -- )
     :vector  xt >r swap to xt dup string.data @ swap length bounds ?do
         i xt execute 1 bytes +loop r> to xt ; 
-    \ vector delete  ( index count collection -- )
+    \ vector deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
         locals| c n i |
         i n + c length min i - to n  \ adjust count if needed
@@ -153,13 +169,20 @@ collection-vtable-size vtable string-vtable  ( collection 0 )
         n negate c collection.length +! ;
     \ vector .each  ( collection -- )
     :vector  dup string.data @ swap length dup . ." : "  type ;
-    \ vector indexof  ( index item collection -- index | -1 )  
+    \ vector indexof  ( index val collection -- index | -1 )  
     :vector  locals| c itm |
         begin  dup c inbounds? while
             dup c [] c@ itm = ?exit
             1 +
         repeat
         drop -1 ;
+    \ vector remove   ( val collection -- )  \ remove all instances
+    :vector  locals| c itm |
+        c length 0 ?do
+            i c length >= if unloop exit then
+            i c [] c@ itm = if i 1 c deletes then 
+        loop ;
+        
 2drop
 
 : *empty-string  ( n -- string )
@@ -191,49 +214,91 @@ struct %node
     %node svar node.previous
     %node svar node.next
 
-
-
 collection-vtable-size vtable node-vtable  ( collection 0 )
     \ vector []  ( index node -- node|0 )
     :vector
         dup length 0 = if 2drop 0 exit then 
         node.first @ swap 0 ?do node.next @ loop ; 
-    \ vector truncate  ( n collection -- )
+    \ vector truncate  ( newlength node -- )
     :vector
         locals| c n |
-        c length n do i c delete loop 
+        n c length over - c deletes 
         n c collection.length dup @ rot min swap ! ;
-    \ vector push  ( item collection -- )
-    :vector  >r  r@ length  r@ [] c!  1 r> collection.length +! ;
-    \ vector pop  ( collection -- item )
-    :vector  >r  r@ length 1 -  r@ [] c@   -1 r> collection.length +! ;
+    \ vector push  ( node destnode -- )
+    :vector
+        locals| b a |
+        a node.parent @ ?dup if remove then
+        b node.last @ a node.previous !
+        b node.first @ 0 = if  a b node.first !  then
+        a b node.last !
+        a node.previous @ ?dup if a swap node.next ! then
+        b a node.parent !
+        1 b collection.length +!
+        ;
+    \ vector pop  ( node -- node|0 )
+    :vector
+        locals| a |
+        a node.last @ dup 0 = abort" Tried to pop from empty node"
+            dup a remove ;
     \ vector each  ( xt collection -- )  ( adr -- )
-    :vector  xt >r swap to xt dup string.data @ swap length bounds ?do
-        i xt execute 1 bytes +loop r> to xt ; 
-    \ vector delete  ( index count collection -- )
+    :vector
+        dup length 0 = over 0 = or if 2drop exit then 
+        xt >r  swap to xt         
+        node.first @ begin ?dup while
+            dup >r  xt execute  r>
+            node.next @ 
+        repeat 
+        r> to xt ; 
+    \ vector deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
         locals| c n i |
-        i n + c length min i - to n  \ adjust count if needed
-        i bytes c string.data @ +  \ dest
-        dup n bytes +  \ src
-        swap  \ src dest
-        c string.data @ c length bytes + \ end
-        over - ?move
-        n negate c collection.length +! ;
+        n 0 do
+            i c [] dup  c remove free-node
+        loop
+        ;
     \ vector .each  ( collection -- )
-    :vector  dup string.data @ swap length dup . ." : "  type ;
-    \ vector indexof  ( index item collection -- index | -1 )  
-    :vector  locals| c itm |
+    :vector  locals| c |  c length dup . ." items: "  0 ?do i c [] . loop ;
+    \ vector indexof  ( index xt collection -- index | -1 )  ( node -- flag )
+    :vector  locals| c XT |
         begin  dup c inbounds? while
-            dup c [] c@ itm = ?exit
+            dup c [] XT execute ?exit
             1 +
         repeat
         drop -1 ;
+    \ vector remove   ( node collection -- )  
+    :vector  locals| c n |
+        n 0 = if exit then
+        n node.parent @ 0 = if exit then  \ not already in any container
+        -1 c collection.length +!
+        c length if
+          n c node.first @ = if  n node.next @ c node.first !  then
+          n c node.last @ =  if  n node.previous @ c node.last !  then
+        else
+          0 c node.first !  0 c node.last !
+        then
+        0 n node.parent ! 
+        n node.previous @ if  n node.next @  n node.previous @ node.next !  then
+        n node.next @ if  n node.previous @  n node.next @ node.previous !  then
+        0 n node.previous !  0 n node.next ! ;  
+
 2drop
+
+: /node  ( node -- )  node-vtable swap collection.vtable ! ;
 
 only forth definitions
 
 \ test
+also venery
 create s 100 *stack drop
 : numbers  locals| c |  c vacate  c capacity 0 do  i c push  loop ;
 s numbers
+
+:noname  %node sizeof allocate throw dup /node ; is new-node
+:noname  free throw ; is free-node
+
+new-node constant p
+new-node constant n1  n1 p push
+new-node constant n2  n2 p push
+new-node constant n3  n3 p push
+new-node constant n4  n4 p push
+only forth definitions

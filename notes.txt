@@ -1,22 +1,16 @@
 generic collections
 
-stack
+array
 
 string
 
 nodetree
-    to add memory management, you need to inherit from the node-vtable
-    and extend DELETE
-    
-    
 
 dynamic array
 
-table
+dynamic string
 
-
-
-
+map ? 
 
 
 
