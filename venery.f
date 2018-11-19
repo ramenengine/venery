@@ -288,7 +288,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
 only forth definitions
 
 \ test
-also venery
+also venery  \ just in order to call SIZEOF
 create s 100 *stack drop
 : numbers  locals| c |  c vacate  c capacity 0 do  i c push  loop ;
 s numbers
