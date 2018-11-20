@@ -25,26 +25,8 @@ features
 
 
 
-word ideas
-
-each
-some
-enough
-map
-length
-indexof
-[]@
-[]!
-[]+!
-join
-slice
-vacate
-pop
-push
-top@
-unshift
-shift
-insert
-union
-diff
-
+questions/ideas:
+- ENOUGH could be called DONE ... 
+- should slice/split take destinations and what order should it be in?
+- mixing different
+- expose the struct words so it's more of a complete package ... add reflection and ability to create custom field definers
