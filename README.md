@@ -2,8 +2,9 @@ in-progress!!!
 
 status:
 
-basic functionality on arrays, strings, and node trees.
+essential functionality on arrays, strings, and node trees.
 
 more collection types and functions to come.
 
-currently undocumented.
+docs:
+glossary at top of venery.f
