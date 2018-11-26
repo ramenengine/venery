@@ -22,7 +22,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
     \ push  ( node destnode -- )
     :vector
         locals| b a |
-        a node.parent @ ?dup if remove then
+        a node.parent @ ?dup if a swap remove then
         b node.last @ a node.previous !
         b node.first @ 0 = if  a b node.first !  then
         a b node.last !
@@ -75,7 +75,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
     :vector  remove ;
     \ insert             ( node i dest-collection -- )
     :vector  2dup [] locals| sibling b i a |
-        a dup node.parent @ remove
+        a node.parent @ ?dup if a swap remove then
         i b length 1 - >= if
             a b push
             exit
