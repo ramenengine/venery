@@ -4,10 +4,10 @@
 struct %node
     %node %collection sembed node.collection
     %node svar node.parent
-    %node svar node.first
-    %node svar node.last
     %node svar node.previous
     %node svar node.next
+    %node svar node.first
+    %node svar node.last
 
 collection-vtable-size vtable node-vtable  ( collection 0 )
     \ []  ( index node -- node|0 )

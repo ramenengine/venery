@@ -55,6 +55,9 @@
 \   Same as gather but vacates the source collection.
 \ UNSERT             ( i collection -- val )
 \   Reverse of INSERT; extracts a value/node from a collection at given index i.
+\ WHICH              ( i xt collection -- i | -1 )  ( val -- flag )
+\   Returns first index of item that satisfies given test xt.
+\   If it's not found, it returns -1.
 \ TODO: (generics)
 \ DIFF               ( filter-xt src-collection dest-collection -- )  ( adr -- flag )  
 
@@ -173,6 +176,17 @@ constant collection-vtable-size
     a -1 more? abort" Error in UNSERT: Collection is empty."
     i a []@
     i a removeat
+;
+
+: which ( i xt collection -- i | -1 )  ( val -- flag )
+    xt >r swap to xt
+    dup length rot do
+        i swap >r r@ []@ xt execute if
+            r> drop i unloop r> to xt exit 
+        then
+    r> loop 
+    drop r> to xt
+    -1
 ;
 
 include venery/array.f
