@@ -13,9 +13,9 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
     :vector  >r  r@ length  r@ [] !  1 r> collection.length +! ;
     \ pop  ( collection -- val )
     :vector  >r  r@ length 1 -  r@ [] @   -1 r> collection.length +! ;
-    \ each  ( xt collection -- )  ( adr -- )
+    \ each  ( xt collection -- )  ( val -- )
     :vector  xt >r swap to xt dup array.data @ swap length cells bounds ?do
-        i xt execute cell +loop r> to xt ; 
+        i @ xt execute cell +loop r> to xt ; 
     \ deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
         locals| c n i |
@@ -27,7 +27,7 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
         over - ?move
         n negate c collection.length +! ;
     \ .each  ( collection -- )
-    :vector  dup length . ." items: " each> ? ;
+    :vector  dup length . ." items: " each> . ;
     \ indexof  ( index val collection -- index | -1 )  
     :vector  locals| c itm |
         begin  dup c inbounds? while

@@ -13,9 +13,9 @@ collection-vtable-size vtable string-vtable  ( collection 0 )
     :vector  >r  r@ length  r@ [] c!  1 r> collection.length +! ;
     \ pop  ( collection -- val )
     :vector  >r  r@ length 1 -  r@ [] c@   -1 r> collection.length +! ;
-    \ each  ( xt collection -- )  ( adr -- )
+    \ each  ( xt collection -- )  ( val -- )
     :vector  xt >r swap to xt dup string.data @ swap length bounds ?do
-        i xt execute 1 bytes +loop r> to xt ; 
+        i c@ xt execute 1 bytes +loop r> to xt ; 
     \ deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
         locals| c n i |

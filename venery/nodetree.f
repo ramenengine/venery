@@ -35,7 +35,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         locals| a |
         a node.last @ dup 0 = abort" Tried to pop from empty node"
             dup a remove ;
-    \ each  ( xt collection -- )  ( adr -- )
+    \ each  ( xt collection -- )  ( val -- )
     :vector
         dup length 0 = over 0 = or if 2drop exit then 
         xt >r  swap to xt         

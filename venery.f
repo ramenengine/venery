@@ -10,7 +10,7 @@
 \   Add val to end of collection.
 \ POP                ( collection -- val )
 \   Fetch vel from end of collection and remove it.
-\ EACH               ( xt collection -- )  ( adr -- )
+\ EACH               ( xt collection -- )  ( val -- )
 \   Itterate over all the items in a collection.  Adr may be address of value or a node.
 \ DELETES            ( index count collection -- )
 \   Delete range from a collection.
@@ -45,9 +45,9 @@
 \   Pop several items from a collection onto the stack.
 \ EACH>              ( collection -- <code> )
 \   DOES> style EACH.
-\ SOME               ( xt filter-xt collection -- )  ( adr -- )  ( adr -- flag )
+\ SOME               ( xt filter-xt collection -- )  ( val -- )  ( val -- flag )
 \   Iterate on items satisfying the filter.
-\ SOME>              ( filter-xt collection -- <code> )   ( adr -- flag )
+\ SOME>              ( filter-xt collection -- <code> )   ( val -- flag )
 \   DOES> style SOME.
 \ GATHER             ( src-collection dest-collection -- )
 \   Pushes all the items from one collection to another.
@@ -145,7 +145,7 @@ constant collection-vtable-size
     r> code> swap each ;
 
 : (some)  dup >r filter execute if r> xt2 execute else r> drop then ;
-: some  ( xt filter-xt collection -- )  ( adr -- )  ( adr -- flag )
+: some  ( xt filter-xt collection -- )  ( val -- )  ( val -- flag )
     xt2 >r  -rot  filter >r  to filter to xt2  
     ['] (some) swap each 
     r> to xt2 r> to filter 
