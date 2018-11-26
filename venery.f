@@ -80,7 +80,6 @@ venery-internal
     0 value xt2
     0 value filter
     : /allot  here over allot swap erase ;
-    : ?execute  ?dup if execute then ;
     : bounds  over + swap ;
     : ?move  dup if move else drop drop drop then ;
     : sfield  ( struct bytes - <name> )  ( adr - adr+n )
@@ -92,18 +91,21 @@ venery-internal
     : sizeof  @ ;
     [undefined] bytes [if] : bytes ; [then]
 
+venery-public
     struct %collection
         %collection svar collection.vtable
         %collection svar collection.length
         %collection svar collection.capacity
+venery-internal
 
-    : vector  ( n - <name> n+cell )  ( ??? collection - ??? )
-        create dup , cell+  does> @ over collection.vtable @ + @ ?execute ;
+    : vector  ( n - <name> n+1 )  ( ??? collection - ??? )
+        create dup cells , 1 +
+        does> @ over collection.vtable @ + @ execute ;
 
     : vtable  ( n - <name> collection 0 )  
         create here swap cells /allot 0 ;
         
-    : :vector  ( collection n - <code> ; collection n+1 )
+    : :vector  ( collection ofs - <code> ; collection ofs+cell )
         2dup :noname -rot cells + ! 1 + ;
 
 venery-public
