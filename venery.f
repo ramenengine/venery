@@ -16,8 +16,6 @@
 \   Delete range from a collection.
 \ .EACH              ( collection -- )
 \   Print the contents of a collection.
-\ INDEXOF            ( index val collection -- index )
-\   Get the index of the first instance of val, starting the search at given index.
 \ REMOVE             ( val collection -- )  
 \   Removes all the instances of val from a collection.
 \ ?@                 ( adr collection -- val )  
@@ -58,6 +56,8 @@
 \ WHICH              ( i xt collection -- i | -1 )  ( val -- flag )
 \   Returns first index of item that satisfies given test xt.
 \   If it's not found, it returns -1.
+\ INDEXOF            ( index val collection -- index )
+\   Get the index of the first instance of val, starting the search at given index.
 \ TODO: (generics)
 \ DIFF               ( filter-xt src-collection dest-collection -- )  ( adr -- flag )  
 
@@ -111,18 +111,17 @@ venery-internal
 venery-public
 
 0
-vector []         
-vector truncate   
-vector push       
-vector pop        
-vector each       
-vector deletes    
-vector .each      
-vector indexof    
-vector remove
-vector ?@
-vector removeat
-vector insert  
+vector []              ( i collection -- adr )
+vector truncate        ( newlength collection -- )
+vector push            ( val collection -- )
+vector pop             ( collection -- val )
+vector each            ( xt collection -- )  ( val -- )
+vector deletes         ( index count collection -- )
+vector .each           ( collection -- )
+vector remove          ( val collection -- )  
+vector ?@              ( adr collection -- val )  
+vector removeat        ( i collection -- )
+vector insert          ( val i dest-collection -- )
 constant collection-vtable-size
 
 : length  ( collection -- n )
@@ -191,9 +190,17 @@ constant collection-vtable-size
     -1
 ;
 
-include venery/array.f
-include venery/string.f
-include venery/nodetree.f
+: indexof  ( index val collection -- index | -1 )  
+    locals| c itm |
+    begin  dup c inbounds? while
+        dup c []@ itm = ?exit
+        1 +
+    repeat
+    drop -1 ;
+
+include ramen/venery/array.f
+include ramen/venery/string.f
+include ramen/venery/nodetree.f
 
 only forth definitions
 
@@ -211,7 +218,6 @@ new-node constant n1  n1 p push
 new-node constant n2  n2 p push
 new-node constant n3  n3 p push
 new-node constant n4  n4 p push
-
 new-node constant p2
 new-node constant n5  n5 p2 push
 new-node constant n6  n6 p2 push

@@ -28,13 +28,6 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
         n negate c collection.length +! ;
     \ .each  ( collection -- )
     :vector  dup length . ." items: " each> . ;
-    \ indexof  ( index val collection -- index | -1 )  
-    :vector  locals| c itm |
-        begin  dup c inbounds? while
-            dup c [] @ itm = ?exit
-            1 +
-        repeat
-        drop -1 ;
     \ remove   ( val collection -- )  \ remove all instances
     :vector  locals| c itm |
         c length 0 ?do

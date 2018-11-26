@@ -53,13 +53,6 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         ;
     \ .each  ( collection -- )
     :vector  locals| c |  c length dup . ." items: "  0 ?do i c [] . loop ;
-    \ indexof  ( index xt collection -- index | -1 )  ( node -- flag )
-    :vector  locals| c XT |
-        begin  dup c inbounds? while
-            dup c [] XT execute ?exit
-            1 +
-        repeat
-        drop -1 ;
     \ remove   ( node collection -- )  
     :vector  locals| c n |
         n 0 = if exit then
