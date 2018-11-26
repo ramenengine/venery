@@ -198,9 +198,9 @@ constant collection-vtable-size
     repeat
     drop -1 ;
 
-include ramen/venery/array.f
-include ramen/venery/string.f
-include ramen/venery/nodetree.f
+include venery/venery/array.f
+include venery/venery/string.f
+include venery/venery/nodetree.f
 
 only forth definitions
 
