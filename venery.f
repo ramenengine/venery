@@ -47,10 +47,12 @@
 \   Iterate on items satisfying the filter.
 \ SOME>              ( filter-xt collection -- <code> )   ( val -- flag )
 \   DOES> style SOME.
+\ []@                ( i collection -- val )
+\   Fetch item from collection at given index i.
 \ GATHER             ( src-collection dest-collection -- )
 \   Pushes all the items from one collection to another.
 \ COPY               ( src-collection dest-collection -- )
-\   Same as gather but vacates the source collection.
+\   Same as gather but vacates the destinatino collection.
 \ UNSERT             ( i collection -- val )
 \   Reverse of INSERT; extracts a value/node from a collection at given index i.
 \ WHICH              ( i xt collection -- i | -1 )  ( val -- flag )
