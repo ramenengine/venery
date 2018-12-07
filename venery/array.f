@@ -52,3 +52,6 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
 : *stack  ( n -- array )  %array *struct >r array-vtable r@ collection.vtable !
     here r@ array.data !  0 r@ collection.length !  dup r@
     collection.capacity !  cells /allot  r> ;
+
+: array,  *array drop ;
+: stack,  *stack drop ;
