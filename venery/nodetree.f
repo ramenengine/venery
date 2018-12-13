@@ -72,7 +72,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
     \ ?@   ( adr collection -- val )  \ adr is val adr, or node, depending, e.g. in EACH SOME DIFF
     :vector  drop ;
     \ removeat            ( i collection -- )  \ deletes or removes the value at i, depending.
-    :vector  remove ;
+    :vector  dup >r [] r> remove ;
     \ insert             ( node i dest-collection -- )
     :vector  2dup [] locals| sibling b i a |
         a node.parent @ ?dup if a swap remove then
