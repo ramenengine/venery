@@ -1,5 +1,3 @@
-
-
 ( Node tree )
 struct %node
     %node %collection sembed node.collection
@@ -16,9 +14,9 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         node.first @ swap 0 ?do node.next @ loop ; 
     \ truncate  ( newlength node -- )
     :vector
-        locals| c n |
-        n c length over - c deletes 
-        n c collection.length dup @ rot min swap ! ;
+        locals| c newlen |
+        newlen c length over - c deletes 
+        newlen c collection.length dup @ rot min swap ! ;
     \ push  ( node destnode -- )
     :vector
         locals| b a |

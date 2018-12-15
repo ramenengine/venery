@@ -200,6 +200,16 @@ constant collection-vtable-size
     repeat
     drop -1 ;
 
+: pushes  ( ... n collection - )
+    locals| c |  0 ?do  c push  loop ;
+
+: pops    ( n collection - ... )
+    locals| c |  0 ?do  c pop  loop ;
+
+: each@  ( collection - ... )
+    each> noop ;
+
+
 include venery/venery/array.f
 include venery/venery/string.f
 include venery/venery/nodetree.f
