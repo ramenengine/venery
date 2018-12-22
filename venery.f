@@ -209,6 +209,9 @@ constant collection-vtable-size
 : each@  ( collection - ... )
     each> noop ;
 
+: venery-sizeof  ( collection - size )
+    sizeof ;
+
 
 include venery/venery/array.f
 include venery/venery/string.f
@@ -217,12 +220,11 @@ include venery/venery/nodetree.f
 only forth definitions
 
 \ test
-also venery  \ just in order to call SIZEOF
 create s 100 *stack drop
 : numbers  locals| c |  c vacate  c capacity 0 do  i c push  loop ;
 s numbers
 
-:noname  %node sizeof allocate throw dup /node ; is new-node
+:noname  %node venery-sizeof allocate throw dup /node ; is new-node
 :noname  free throw ; is free-node
 
 new-node constant p
