@@ -157,7 +157,7 @@ constant collection-vtable-size
     r> to xt2 r> to filter 
 ;
 
-: some>  ( filter-xt collection -- <code> )
+: some>  ( filter-xt collection -- <code> )  ( val -- flag )  ( val -- )  
     r> code> -rot some ;
     
 : []@  ( i collection -- val )

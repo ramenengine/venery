@@ -38,8 +38,9 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         dup length 0 = over 0 = or if 2drop exit then 
         xt >r  swap to xt         
         node.first @ begin ?dup while
-            dup >r  xt execute  r>
-            node.next @ 
+            dup node.next @ >r
+                xt execute
+            r>
         repeat 
         r> to xt ; 
     \ deletes  ( index count collection -- )
