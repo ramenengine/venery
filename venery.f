@@ -148,10 +148,12 @@ constant collection-vtable-size
     locals| s |  0 ?do  s pop  loop ;
 
 : each>  ( collection -- <code> )
+    dup 0= if drop r> drop exit then
     r> code> swap each ;
 
 : (some)  dup >r filter execute if r> xt2 execute else r> drop then ;
 : some  ( xt filter-xt collection -- )  ( val -- )  ( val -- flag )
+    dup 0= if drop r> 3drop exit then
     xt2 >r  -rot  filter >r  to filter to xt2  
     ['] (some) swap each 
     r> to xt2 r> to filter 
