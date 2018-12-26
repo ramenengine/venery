@@ -192,6 +192,11 @@ constant collection-vtable-size
     -1
 ;
 
+: which@  ( i xt collection -- val | 0 )  ( val -- flag )
+    dup >r which dup -1 = if drop r> drop 0 exit then
+    r> []@ 
+;
+
 : indexof  ( index val collection -- index | -1 )  
     locals| c itm |
     begin  dup c inbounds? while
