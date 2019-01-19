@@ -51,7 +51,7 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         loop
         ;
     \ .each  ( collection -- )
-    :vector  locals| c |  c length dup . ." items: "  0 ?do i c [] . loop ;
+    :vector  locals| c |  c length dup 1i i.  ." items: "  0 ?do i c [] . loop ;
     \ remove   ( node collection -- )  
     :vector  locals| c n |
         n 0 = if exit then

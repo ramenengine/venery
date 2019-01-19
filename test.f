@@ -5,7 +5,7 @@ create s 100 *stack drop
 : numbers  locals| c |  c vacate  c capacity 0 do  i c push  loop ;
 s numbers
 
-:noname  %node venery-sizeof allocate throw dup /node ; is new-node
+:noname  %node venery:sizeof allocate throw dup /node ; is new-node
 :noname  free throw ; is free-node
 
 new-node constant p

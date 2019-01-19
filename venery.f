@@ -74,10 +74,10 @@ defer free-node  ( node -- )
 
 
 vocabulary venery
-: venery-internal  only forth also venery definitions ;
-: venery-public  only forth definitions also venery ;
+: venery:internal  only forth also venery definitions ;
+: venery:public  only forth definitions also venery ;
 
-venery-internal
+venery:internal
     0 value xt
     0 value xt2
     0 value filter
@@ -93,12 +93,14 @@ venery-internal
     : sizeof  @ ;
     [undefined] bytes [if] : bytes ; [then]
 
-venery-public
+venery:public
     struct %collection
+        %collection svar collection.class   \ for compatibility with Super Objects
         %collection svar collection.vtable
         %collection svar collection.length
         %collection svar collection.capacity
-venery-internal
+        %collection svar collection.dynamic
+venery:internal
 
     : vector  ( n - <name> n+1 )  ( ??? collection - ??? )
         create dup cells , 1 +
@@ -110,7 +112,7 @@ venery-internal
     : :vector  ( collection ofs - <code> ; collection ofs+cell )
         2dup :noname -rot cells + ! 1 + ;
 
-venery-public
+venery:public
 
 0
 vector []              ( i collection -- adr )
@@ -216,7 +218,7 @@ constant collection-vtable-size
 : each@  ( collection - ... )
     each> noop ;
 
-: venery-sizeof  ( collection - size )
+: venery:sizeof  ( collection - size )
     sizeof ;
 
 

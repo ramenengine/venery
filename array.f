@@ -27,7 +27,7 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
         over - ?move
         n negate c collection.length +! ;
     \ .each  ( collection -- )
-    :vector  dup length . ." items: " each> . ;
+    :vector  dup length 1i i. ." items: " each> . ;
     \ remove   ( val collection -- )  \ remove all instances
     :vector  locals| c itm |
         c length 0 ?do
@@ -46,12 +46,20 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
         1 dest collection.length +! ;
 2drop
 
-: *array  ( n -- array )  %array *struct >r array-vtable r@ collection.vtable !
-    here r@ array.data !  dup r@ collection.length !  dup r@
-    collection.capacity !  cells /allot  r> ;
-: *stack  ( n -- array )  %array *struct >r array-vtable r@ collection.vtable !
-    here r@ array.data !  0 r@ collection.length !  dup r@
-    collection.capacity !  cells /allot  r> ;
+: *array  ( n -- array )
+    %array *struct >r
+        array-vtable r@ collection.vtable !
+        here r@ array.data !  dup r@ collection.length !
+        dup r@ collection.capacity !
+        cells /allot
+    r> ;
+: *stack  ( n -- array )
+    %array *struct >r
+        array-vtable r@ collection.vtable !
+        here r@ array.data !  0 r@ collection.length !
+        dup r@ collection.capacity !
+        cells /allot
+    r> ;
 
 : array,  *array drop ;
 : stack,  *stack drop ;

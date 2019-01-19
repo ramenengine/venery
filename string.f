@@ -27,7 +27,7 @@ collection-vtable-size vtable string-vtable  ( collection 0 )
         over - ?move
         n negate c collection.length +! ;
     \ .each  ( collection -- )
-    :vector  dup string.data @ swap length dup . ." : "  type ;
+    :vector  dup string.data @ swap length dup 1i i.  ." : "  type ;
     \ remove   ( val collection -- )  \ remove all instances
     :vector  locals| c itm |
         c length 0 ?do
