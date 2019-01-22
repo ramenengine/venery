@@ -185,7 +185,7 @@ constant collection-vtable-size
     i a removeat
 ;
 
-: which ( i xt collection -- i | -1 )  ( val -- flag )
+: which ( i test-xt collection -- i | -1 )  ( val -- flag )
     xt >r swap to xt
     dup length rot do
         i swap >r r@ []@ xt execute if
@@ -196,7 +196,7 @@ constant collection-vtable-size
     -1
 ;
 
-: which@  ( i xt collection -- val | 0 )  ( val -- flag )
+: which@  ( i test-xt collection -- val | 0 )  ( val -- flag )
     dup >r which dup -1 = if drop r> drop 0 exit then
     r> []@ 
 ;
