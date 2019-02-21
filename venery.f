@@ -35,19 +35,19 @@
 \   Get the total capacity of a collection.  (Can be different from its length.)
 \ VACATE             ( collection -- )
 \   Deletes all items from a collection.
-\ >TOP               ( collection -- adr )
+\ >TOP               ( collection -- adr )   \ pronounced "to-top"
 \   Get the address of the topmost item of a collection.  (Index length - 1)
 \ PUSHES             ( ... n collection - )
 \   Push several items from the stack to a collection.
 \ POPS               ( n collection - ... )
 \   Pop several items from a collection onto the stack.
-\ EACH>              ( collection -- <code> )
+\ EACH>              ( collection -- <code> )         \ pronounced "each-ket"
 \   DOES> style EACH.
 \ SOME               ( xt filter-xt collection -- )  ( val -- )  ( val -- flag )
 \   Iterate on items satisfying the filter.
-\ SOME>              ( filter-xt collection -- <code> )   ( val -- flag )
+\ SOME>              ( filter-xt collection -- <code> )   ( val -- flag )   \ pronounced "some-ket"
 \   DOES> style SOME.
-\ []@                ( i collection -- val )
+\ []@                ( i collection -- val )      \ pronounced "brackets-fetch"
 \   Fetch item from collection at given index i.
 \ GATHER             ( src-collection dest-collection -- )
 \   Pushes all the items from one collection to another.
@@ -115,7 +115,7 @@ venery:internal
 venery:public
 
 0
-vector []              ( i collection -- adr )
+vector []              ( i collection -- adr )         \ pronounced "brackets"
 vector truncate        ( newlength collection -- )
 vector push            ( val collection -- )
 vector pop             ( collection -- val )
@@ -123,7 +123,7 @@ vector each            ( xt collection -- )  ( val -- )
 vector deletes         ( index count collection -- )
 vector .each           ( collection -- )
 vector remove          ( val collection -- )  
-vector ?@              ( adr collection -- val )  
+vector ?@              ( adr collection -- val )       \ pronounced "question-fetch" or "q-fetch"
 vector removeat        ( i collection -- )
 vector insert          ( val i dest-collection -- )
 constant collection-vtable-size
@@ -149,7 +149,7 @@ constant collection-vtable-size
 : pops  ( n collection - ... ) 
     locals| s |  0 ?do  s pop  loop ;
 
-: each>  ( collection -- <code> )
+: each>  ( collection -- <code> )  ( val -- )
     dup 0= if drop r> drop exit then
     r> code> swap each ;
 

@@ -96,3 +96,6 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
 : /node  ( node -- )
     $ffffffff over collection.capacity !
     node-vtable swap collection.vtable ! ;
+
+: 0node  ( node -- )
+    dup %node venery:sizeof erase /node ;
