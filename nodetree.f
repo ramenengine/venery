@@ -45,9 +45,9 @@ collection-vtable-size vtable node-vtable  ( collection 0 )
         r> to xt ; 
     \ deletes  ( index count collection -- )
     :vector  3dup nip length >= if 3drop exit then
-        locals| c n i |
+        locals| c n i0 |
         n 0 do
-            i c [] dup  c remove free-node
+            i0 c []  dup c remove free-node
         loop
         ;
     \ .each  ( collection -- )
