@@ -63,3 +63,7 @@ collection-vtable-size vtable array-vtable  ( collection 0 )
 
 : array,  *array drop ;
 : stack,  *stack drop ;
+
+: 0array  ( array/stack - )  
+    0 over [] ( array adr ) over collection.capacity @ cells erase
+    ( array ) vacate ;
